@@ -1,0 +1,37 @@
+Title : Construct a Decision Tree in R
+
+Decision tree is a classification technique used to predict the classes/labels of the
+dependent variable. If the dependent variable is categorical, we use a classification tree. If the dependent variable is continuous, we use a Regression tree.
+
+> install.packages("party") # Alternative method : Go to Packages menu -> Select Install
+Packages -> Choose a cran mirror -> Select the 'party' package
+> library(party) # Alternatively : Go to Packages menu -> Load Packages -> Select 'party'
+# We shall use the readingSkills dataset from the party package. Here we are trying to
+predict if a given person is a nativeSpeaker(Dependent variable)
+on the basis of his age, shoeSize and score (Independent variables). As the dependent
+variable is categorical, we're constructing a classification
+tree.
+
+> print(readingSkills)
+
+# Create a training set consisting of 105 observations from the dataset.
+> input <- readingSkills[c(1:105),]
+
+
+# Build a classification tree using the ctree function
+> output <- ctree(nativeSpeaker ~ age + shoeSize + score, input)
+
+
+# Plot the classification tree
+> plot(output)
+
+
+# Inference :
+If score <= 38.306 and age > 6 , then not a nativeSpeaker
+If 30.766 < score <= 38.306 and age <= 6 , then a nativeSpeaker
+If score <= 30.766 and age <= 6 , then not a nativeSpeaker
+If score > 38.306 , then 70 % of those tested are nativeSpeaker
+shoeSize does not seem to have any impact on the dependent variable
+
+Note: The decision tree is highly sensitive to the training set chosen. The tree varies as
+the training set changes.
