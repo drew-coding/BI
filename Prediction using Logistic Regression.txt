@@ -1,0 +1,108 @@
+Title: Prediction using Logistic Regression
+
+A dataset called titanic.csv is used. The task is to build a logistic regression model that will predict how many of the passengers on board survived and how many died
+
+#Import the titanic.csv file
+> titanic <- read.table(file = "C:/BI/titanic.csv", sep = ",", header = T, na.strings = (""))
+
+#Check the number of rows and columns present in the dataset using the dim function.From the
+output it is clear that there are 1309 rows and 14 columns
+
+> dim(titanic)
+[1] 1309 14
+
+
+# View the data from the dataset
+> head(titanic)
+
+summary(titanic)
+
+table(titanic$survived)
+
+# From the output of summary, we can observe that the variables 'name', 'sex' , 'cabin' ,
+'embarked', 'boat' and 'home.dest' are categorical. These categorical variables
+need to be factored,so as to express them in a vector format. However, factoring is done only
+for those categorical variables that have a finite number of values. Hence,
+name and home.dest do not qualify for factoring.
+
+> titanic$sex<-factor(titanic$sex)
+> titanic$cabin<-factor(titanic$cabin)
+> titanic$embarked<-factor(titanic$embarked)
+> titanic$boat<-factor(titanic$boat)
+
+# One can check if the factoring process was successful by using the is.factor function
+> is.factor(titanic$sex)
+[1] TRUE
+> is.factor(titanic$boat)
+[1] TRUE
+
+
+titanic=titanic[-c(3,8,10,12,13,14)]
+
+# We can check the reduced dataset using the summary function
+
+> summary(titanic)
+
+
+# Create the Training and the Test Sets/ Samples randomly by scanning the entire dataset using the nrow function
+# Following step creates a random sample of 60% of the total dataset
+
+> index<-sample(1:nrow(titanic),size=0.6*nrow(titanic))
+
+# Create a training set with 60% of the observations from the dataset
+
+> train=titanic[index,]
+
+# Create a test set with the remaining 40% of the observations from the dataset
+> test=titanic[-index,]
+
+# View the training and the test sets
+> head(train)
+> head(test)
+
+
+# Build a Logistic model on the training set using the glm function, that will be used for
+prediction on the test set.
+The '.' indicates all the independent variables in the training dataset. 'binomial' is used in cases
+where the dependent
+variable takes only two values( 1 or 0). link=logit is the mathematical formulation.
+
+> model <- glm(survived ~.,family=binomial(link=logit),data=train)
+
+> summary(model)
+
+
+Number of Fisher Scoring iterations: 4
+# From the above result, we can see that pclass, sex and age have minimum p- values. So,
+technically only these variables directly
+affect the probability of a passenger's survival.
+# Now let's use the model that we've built to predict the value of 'survived' for all the
+observations in the test set. We use the predict function.It will
+return the probability(between 0.0 - 1.0) of 'survived'.
+
+> pred <- predict(model, test, type= "response")
+
+# y_pred is the value that will be predicted by the model. If the probability(pred) > 0.5, then the
+model predicts that a passenger has survived(1), else the passenger is predicted to be dead(0)
+
+> y_pred <- ifelse(pred > 0.5, 1, 0)
+
+# y_act is the actual value of 'survived' for the observations in the test set
+> y_act <- test$survived
+
+# To check how our model has fared in efficiently predicting the value of the dependent variable(
+survived ), we plot a confusion matrix of actual vs predicted.
+
+> table(y_act,y_pred)
+
+	y_pred
+y_act 	0 	1
+0 	211 	37
+1 	52 	121
+
+
+# From our output , we infer the following:
+211 passengers who were predicted to be dead, actually died (True Negative)
+121 passengers who were predicted to have survived, actually survived (True Positive)
+37 passengers who were predicted to have survived, actually died (False Positive)
+52 passengers who were predicted to be dead, actually survived (False Negative)
