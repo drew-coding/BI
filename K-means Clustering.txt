@@ -1,0 +1,39 @@
+Title : k-means clustering using R
+
+
+Step 1) We will use the iris dataset available in R. We can view the iris dataset using the
+print function
+
+>print(iris)
+
+
+Step 2) Load the data from iris dataset into newiris
+
+>newiris<-iris
+
+
+Step 3) As we want to implement K-means clustering algorithm that uses unsupervised
+learning, we will remove the dependent variable ‘Species’ from the dataset newiris.
+
+>newiris$SSpecies<-NULL
+
+
+Step 4) Create 3 clusters using the kmeans(data, k) function that takes as parameters the
+dataset newiris the number of clusters to be formed(3).
+
+>kc<-kmeans(newiris,3)
+
+>print(kc)
+
+
+Step 6) Compare the Species label with the clustering result
+
+>table(iris$Species,kc$cluster)
+
+
+Step 7) Plot the clusters and their centre
+
+>plot(newiris[c("Sepal.Length",Sepal.Width)],col=kc$cluster)
+
+>points(kc$cluster[,c("Sepal.Length","Sepal.Width")],col=1:3,pch=8.cex=2)
+
